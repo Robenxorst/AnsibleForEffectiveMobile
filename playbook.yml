@@ -1,0 +1,8 @@
+---
+- name: "playbook"
+  hosts: test
+  become: true
+  roles:
+    - {role: 'tools/docker-install', tags: docker}
+    - {role: 'tools/mount-for-containers', tags: mount}
+    - {role: 'tools/create-containers', tags: containers}

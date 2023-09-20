@@ -1,0 +1,18 @@
+---
+- name: Create directory for db
+  file:
+    path: /mnt/db
+    state: directory
+    mode: '0777'
+
+- name: Create directory for src(php)
+  file:
+    path: /mnt/src
+    state: directory
+    mode: '0755'
+
+- name: Create directory for 
+  file:
+    path: /mnt/nginx
+    state: directory
+    mode: '0755'

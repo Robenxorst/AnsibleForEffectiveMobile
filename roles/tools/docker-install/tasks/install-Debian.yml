@@ -1,0 +1,56 @@
+---
+- name: Task ping
+  ping:
+
+- name: install packages
+  apt:
+    name: "{{ packages }}"
+    state: latest
+    update_cache: yes
+  vars:
+    packages:
+    - vim
+    - curl
+    - zip
+    - unzip
+    - ca-certificates
+    - gnupg
+    - lsb-release
+
+- name: create dir for keyrings
+  ansible.builtin.shell:
+    cmd: mkdir -p /etc/apt/keyrings
+
+- name: add docker repo1
+  ansible.builtin.shell:
+    cmd: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+
+- name: add docker repo2
+  ansible.builtin.shell:
+    cmd: echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+- name: install docker
+  apt:
+    name: "{{ packages }}"
+    state: latest
+    update_cache: yes
+  vars:
+    packages:
+    - docker-ce
+    - docker-ce-cli
+    - containerd.io
+
+- name: install docker-compose
+  ansible.builtin.shell:
+    cmd: curl -L "https://github.com/docker/compose/releases/download/v2.6.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+
+- name: add rules for docker-compose
+  ansible.builtin.shell:
+    cmd: chmod +x /usr/local/bin/docker-compose
+
+- name: check if docker is started and enabled on boot
+  systemd:
+    daemon_reload: yes
+    name: docker
+    enabled: yes
+    state: started

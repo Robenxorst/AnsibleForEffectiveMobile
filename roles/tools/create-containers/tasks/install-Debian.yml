@@ -1,0 +1,29 @@
+---
+- name: Create workdir
+  file:
+    path: /work
+    state: directory
+
+- name: set Dockerfile
+  template:
+    src: Dockerfile.j2
+    dest: /work/Dockerfile
+
+- name: set docker-compouse file
+  template:
+    src: docker-compouse.j2
+    dest: /work/docker-compouse.yml
+
+- name: set index.php
+  template:
+    src: index.php.j2
+    dest: /mnt/src/index.php
+
+- name: set nginx.conf
+  template:
+    src: nginx.conf.j2
+    dest: /mnt/nginx/nginx.conf
+
+- name: create containers
+  ansible.builtin.shell:
+    cmd: cd /work && docker-compose up --build -d
